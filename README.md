@@ -10,9 +10,27 @@ Make the usage of the Philips Hue API 1.0 easier with an object-oriented structu
 pip install huesdk
 ```
 
-## Connexion
+## Discovery
 
-To find the IP of your hue bridge, go to https://discovery.meethue.com
+To find the IP of your hue bridge, go to https://discovery.meethue.com. Or alternatively,
+
+```python
+from huesdk import Discover
+discover = Discover()
+print(discover.find_hue_bridge())
+```
+
+Since https://discovery.meethue.com and ```discover.find_hue_bridge()``` are rate limited
+and require an internet connection, you can also search for bridges locally using mDNS:
+
+```python
+from huesdk import Discover
+discover = Discover()
+print(discover.find_hue_bridge_mdns(timeout=5))
+```
+
+
+## Connexion
 
 ```python
 from huesdk import Hue
@@ -21,7 +39,7 @@ from huesdk import Hue
 # the connect method will return a username
 username = Hue.connect(bridge_ip=YOUR_BRIDGE_IP)
 
-# You can now create an instance of the Hus class, 
+# You can now create an instance of the Hue class, 
 # next you won't need to press the button
 hue = Hue(bridge_ip=YOUR_BRIDGE_IP, username=YOUR_USERNAME)
 
@@ -94,8 +112,13 @@ So `transition=10` will make the transition last 1 second.
 The default value is 4 (400ms).
 
 ```python
-group = hue.get_group(name="kitchen")
-group.off(transition=1000)
+light = hue.get_light(name="kitchen")
+
+# the light will slowly turn off in 5secs
+light.off(transition=50)
+
+# the light will be red after 10 seconds
+light.set_color(hexa="#ff0000", transition=100)
 ```
 
 ## Groups

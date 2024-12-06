@@ -1,5 +1,4 @@
 import requests
-import json
 
 from huesdk.light import Light
 from huesdk.group import Group
@@ -87,7 +86,7 @@ class Hue:
 
     def _get_one_group(self, id_=None):
         result = self.get(f'/{self.username}/groups/{id_}')
-        return Light(sdk=self, light_id=id_, **result)
+        return Group(sdk=self, group_id=id_, **result)
 
     def get_group(self, id_=None, name=None):
         if id_ is not None:
